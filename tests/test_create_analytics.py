@@ -74,6 +74,7 @@ def test_create_analytics_installs_all_seven_views_and_hypothetical_scenario(
         for view in expected_views
     ) == len(expected_views)
     assert "0.08::numeric AS assumed_fuel_reduction_pct" in script
+    assert "current_costs.current_logistics_cost_brl" in script
     assert "Simulacao hipotetica" in script
     assert "nao representa economia realizada" in script
     assert "Camada analítica criada" in capsys.readouterr().out

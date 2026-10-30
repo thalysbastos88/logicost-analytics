@@ -195,6 +195,7 @@ SELECT
         AS scenario_notice,
     scenario.assumed_fuel_reduction_pct * 100 AS assumed_fuel_reduction_pct,
     current_costs.current_fuel_cost_brl,
+    current_costs.current_logistics_cost_brl,
     ROUND(
         current_costs.current_fuel_cost_brl
         * scenario.assumed_fuel_reduction_pct,
