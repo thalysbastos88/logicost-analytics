@@ -100,3 +100,4 @@ def test_analytics_validation_covers_all_views_and_scenario_checks():
     assert "uses_expected_reduction" in validation_sql
     assert "total_cost_share_pct" in validation_sql
     assert "cost_reconciliation_errors" in validation_sql
+    assert "SUM(composition.cost_share_pct)" in validation_sql

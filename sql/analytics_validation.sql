@@ -100,9 +100,9 @@ BEGIN
             cost_errors, fuel_errors;
     END IF;
 
-    SELECT ROUND(SUM(cost_share_pct), 2)
+    SELECT ROUND(SUM(composition.cost_share_pct), 2)
     INTO cost_share_pct
-    FROM analytics.vw_cost_composition;
+    FROM analytics.vw_cost_composition AS composition;
 
     IF ABS(cost_share_pct - 100.00) > 0.07 THEN
         RAISE EXCEPTION 'Cost component shares must sum to 100%%; got %',
