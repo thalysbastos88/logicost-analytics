@@ -1,0 +1,10 @@
+__pycache__/
+.pytest_cache/
+.venv/
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+*.pbix
+data/processed/
+.DS_Store

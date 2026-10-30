@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGDATABASE: logicost_ci
+      PGUSER: logicost
+      PGPASSWORD: logicost_ci
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: logicost_ci
+          POSTGRES_USER: logicost
+          POSTGRES_PASSWORD: logicost_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U logicost -d logicost_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Run tests
+        run: python -m pytest -q
+      - name: Run local pipeline
+        run: |
+          python -m src.generate_data
+          python -m src.etl
+          python -m src.kpis
+      - name: Create PostgreSQL schema
+        run: psql --set ON_ERROR_STOP=1 --file sql/schema_star.sql
+      - name: Load dimensions and facts
+        run: python -m src.load_postgres
+      - name: Verify idempotent PostgreSQL load
+        run: python -m src.load_postgres
+      - name: Validate PostgreSQL data
+        run: psql --set ON_ERROR_STOP=1 --file sql/validation_queries.sql
+      - name: Create analytical views
+        run: python -m src.create_analytics
+      - name: Validate analytical views
+        run: psql --set ON_ERROR_STOP=1 --file sql/analytics_validation.sql
+      - name: Assert PostgreSQL load
+        run: |
+          psql --set ON_ERROR_STOP=1 --command "DO \$\$
+          BEGIN
+            IF (SELECT COUNT(*) FROM analytics.fact_deliveries) <> 5000 THEN
+              RAISE EXCEPTION 'Unexpected delivery count in fact table';
+            END IF;
+            IF EXISTS (
+              SELECT 1 FROM analytics.fact_deliveries
+              WHERE ABS(
+                fuel_cost_brl + toll_cost_brl + driver_cost_brl +
+                maintenance_cost_brl + third_party_cost_brl +
+                warehouse_cost_brl + other_cost_brl - total_logistics_cost_brl
+              ) >= 0.02
+            ) THEN
+              RAISE EXCEPTION 'Cost reconciliation failed in fact table';
+            END IF;
+          END \$\$;"

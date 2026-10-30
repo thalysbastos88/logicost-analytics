@@ -1,0 +1,15 @@
+Receita Frete = SUM(deliveries_enriched[freight_revenue_brl])
+Custo Logístico = SUM(deliveries_enriched[total_logistics_cost_brl])
+Resultado Operacional = [Receita Frete] - [Custo Logístico]
+Margem de Contribuição % = DIVIDE([Resultado Operacional], [Receita Frete])
+Entregas = DISTINCTCOUNT(deliveries_enriched[delivery_id])
+Custo Médio por Entrega = DIVIDE([Custo Logístico], [Entregas])
+KM Total = SUM(deliveries_enriched[distance_km])
+Custo por KM = DIVIDE([Custo Logístico], [KM Total])
+Entregas no Prazo = CALCULATE([Entregas], deliveries_enriched[delivery_status] = "Entregue no prazo")
+% Entregas no Prazo = DIVIDE([Entregas no Prazo], [Entregas])
+Devoluções = CALCULATE([Entregas], deliveries_enriched[delivery_status] = "Devolvida")
+% Devoluções = DIVIDE([Devoluções], [Entregas])
+Custo Combustível = SUM(deliveries_enriched[fuel_cost_brl])
+Economia Potencial Combustível 8% = [Custo Combustível] * 0.08
+Custo Logístico Simulado Pós Redução = [Custo Logístico] - [Economia Potencial Combustível 8%]

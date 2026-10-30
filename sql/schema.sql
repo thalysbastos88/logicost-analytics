@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS fact_deliveries (
+  delivery_id VARCHAR(20) PRIMARY KEY,
+  delivery_date DATE NOT NULL,
+  region VARCHAR(40) NOT NULL,
+  route_id VARCHAR(20) NOT NULL,
+  vehicle_id VARCHAR(20) NOT NULL,
+  carrier VARCHAR(60) NOT NULL,
+  distance_km NUMERIC(12,2) NOT NULL CHECK (distance_km >= 0),
+  fuel_efficiency_km_l NUMERIC(8,2),
+  fuel_liters NUMERIC(12,2),
+  fuel_price_brl_l NUMERIC(10,2),
+  fuel_cost_brl NUMERIC(12,2) NOT NULL,
+  toll_cost_brl NUMERIC(12,2) NOT NULL,
+  driver_cost_brl NUMERIC(12,2) NOT NULL,
+  maintenance_cost_brl NUMERIC(12,2) NOT NULL,
+  third_party_cost_brl NUMERIC(12,2) NOT NULL,
+  warehouse_cost_brl NUMERIC(12,2) NOT NULL,
+  other_cost_brl NUMERIC(12,2) NOT NULL,
+  total_logistics_cost_brl NUMERIC(12,2) NOT NULL,
+  freight_revenue_brl NUMERIC(12,2) NOT NULL,
+  delivery_status VARCHAR(40) NOT NULL,
+  delay_days INTEGER NOT NULL DEFAULT 0
+);

@@ -1,0 +1,27 @@
+{
+  "deliveries": 5000,
+  "total_cost_brl": 1114260.37,
+  "revenue_brl": 926650.04,
+  "contribution_brl": -187610.33,
+  "contribution_margin_pct": -20.25,
+  "avg_cost_per_delivery_brl": 222.85,
+  "avg_cost_per_km_brl": 2.39,
+  "on_time_rate_pct": 78.46,
+  "return_rate_pct": 7.24,
+  "cost_breakdown_brl": {
+    "fuel": 387348.76,
+    "toll": 88160.0,
+    "driver": 381351.42,
+    "maintenance": 83396.49,
+    "third_party": 116503.82,
+    "warehouse": 37488.54,
+    "other": 20011.34
+  },
+  "hypothetical_fuel_reduction_scenario": {
+    "assumed_fuel_reduction_pct": 8.0,
+    "current_fuel_cost_brl": 387348.76,
+    "potential_fuel_savings_brl": 30987.9,
+    "estimated_new_logistics_cost_brl": 1083272.47,
+    "notice": "Cenario hipotetico; nao representa economia realizada ou recomendacao operacional."
+  }
+}
